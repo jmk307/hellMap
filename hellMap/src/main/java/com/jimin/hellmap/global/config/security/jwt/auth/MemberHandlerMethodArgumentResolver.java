@@ -1,5 +1,6 @@
 package com.jimin.hellmap.global.config.security.jwt.auth;
 
+import com.jimin.hellmap.domain.member.MemberRepository;
 import com.jimin.hellmap.global.config.security.jwt.annotation.LoginUser;
 import com.jimin.hellmap.global.error.ErrorCode;
 import com.jimin.hellmap.global.error.exception.NotFoundException;
@@ -29,7 +30,7 @@ public class MemberHandlerMethodArgumentResolver implements HandlerMethodArgumen
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null) {
-            return memberRepository.findByAuthId(authentication.getName())
+            return memberRepository.findByProviderId(authentication.getName())
                     .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
         }
 

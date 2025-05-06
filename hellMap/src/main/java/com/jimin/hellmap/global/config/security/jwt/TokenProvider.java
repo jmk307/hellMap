@@ -34,7 +34,7 @@ public class TokenProvider implements InitializingBean {
     public static final String BEARER = "Bearer ";
 
     /** 토큰 유효 시간 (ms) */
-    private static final long JWT_EXPIRATION_MS = 1000L * 60 * 60 * 24; // 1일
+    private static final long JWT_EXPIRATION_MS = 1000L * 60 * 60 * 24 * 120; // 120일 (그냥 길게 120일로 설정)
     private static final long REFRESH_TOKEN_EXPIRATION_MS = 1000L * 60 * 60 * 24 * 7; //7일
     private static final String AUTHORITIES_KEY = "auth";
 
@@ -52,7 +52,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     // accessToken
-    public String generateAccessToken(String authId) {
+    public String generateAccessToken(String providerId) {
 
         //권한 가져오기
         final Date now = new Date();
@@ -60,7 +60,7 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setIssuedAt(now) // 생성일자 지정(현재)
-                .setSubject(authId) // 사용자(principal => phoneNumber)
+                .setSubject(providerId) // 사용자(principal => 소셜 고유 id)
                 .claim(AUTHORITIES_KEY, "ROLE_USER") //권한 설정
                 .setExpiration(accessTokenExpiresIn) // 만료일자
                 .signWith(key, SignatureAlgorithm.HS512) // signature에 들어갈 secret 값 세팅

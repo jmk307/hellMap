@@ -18,8 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -70,14 +68,23 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                         // Swagger 허용
-                        .requestMatchers("/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**", "/csrf").permitAll()
+                        .requestMatchers("/",
+                                    "/swagger-ui.html",
+                                    "/swagger-ui/**",
+                                    "/v3/api-docs/**",
+                                    "/webjars/**",
+                                    "/swagger-resources/**",
+                                    "/csrf").permitAll()
 
                         // API URI 권한 설정
-                        .requestMatchers("/api/members/**").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers(("/auth/success")).permitAll()
 
                         // 그 외 요청은 모두 인증 필요
-                        .anyRequest().authenticated()
+                        // TODO: 추후에 권한 설정
+                        .anyRequest().permitAll()
                 );
+
         http.addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
 

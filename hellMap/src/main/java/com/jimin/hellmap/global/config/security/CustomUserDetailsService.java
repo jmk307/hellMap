@@ -1,5 +1,7 @@
 package com.jimin.hellmap.global.config.security;
 
+import com.jimin.hellmap.domain.member.MemberRepository;
+import com.jimin.hellmap.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,14 +22,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(final String authId) {
-        return memberRepository.findByAuthId(authId)
+    public UserDetails loadUserByUsername(final String providerId) {
+        return memberRepository.findByProviderId(providerId)
                 .map(this::createUser)
-                .orElseThrow(() -> new UsernameNotFoundException(authId + " -> 데이터베이스에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(providerId + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
     private User createUser(Member member) {
-        return new User(member.getAuthId(), member.getPassword(), authorities());
+        return new User(member.getProviderId(), member.getNickname(), authorities());
     }
 
     private static Collection<? extends GrantedAuthority> authorities() {
